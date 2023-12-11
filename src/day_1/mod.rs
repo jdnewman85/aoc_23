@@ -4,6 +4,30 @@ use std::{error::Error, collections::HashMap, fs::File, io::{BufReader, BufRead 
 
 use regex::Regex;
 
+const DIGIT_RADIX: u32 = 10;
+pub fn p1(input_filename: &str) -> Result<u32, Box<dyn Error>> {
+    let file = File::open(input_filename)?;
+    let lines = BufReader::new(file).lines();
+
+    let calibration_values:u32 = lines.map(|line| {
+        let mut line = line.unwrap(); //? .to_lowercase();
+        line.retain(|c| c.is_digit(DIGIT_RADIX));
+        let mut digits = line.chars();
+
+        let first = digits
+            .next().unwrap()
+            .to_digit(DIGIT_RADIX).unwrap();
+        let last = match digits.last() {
+            Some(d) => d.to_digit(DIGIT_RADIX).unwrap(),
+            None => first,
+        };
+
+        first*10 + last
+    }).sum();
+
+    Ok(calibration_values)
+}
+
 pub fn p2(input_filename: &str) -> Result<u32, Box<dyn Error>> {
     //Setup
     let words = vec![
@@ -59,6 +83,10 @@ pub fn p2(input_filename: &str) -> Result<u32, Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
 use crate::*;
+    #[test]
+    fn day1_p1_sample() {
+        assert_eq!(day_1::p1("inputs/day_1_p1.sample").unwrap(), 142);
+    }
     #[test]
     fn day1_p2_sample() {
         assert_eq!(day_1::p2("inputs/day_1_p2.sample").unwrap(), 281);
