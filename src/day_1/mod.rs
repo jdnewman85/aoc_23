@@ -91,5 +91,4 @@ use crate::*;
     fn day1_p2_sample() {
         assert_eq!(day_1::p2("inputs/day_1_p2.sample").unwrap(), 281);
     }
-
 }
